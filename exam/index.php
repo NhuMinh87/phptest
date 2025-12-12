@@ -1,7 +1,5 @@
 <?php
-/* ==========================
-   KẾT NỐI DATABASE
-========================== */
+
 $host = "localhost";
 $user = "root";
 $pass = "root";
@@ -12,9 +10,7 @@ $conn = new mysqli($host, $user, $pass, $dbname);
 if ($conn->connect_error) die("Lỗi kết nối DB: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-/* ==========================
-   VALIDATE DỮ LIỆU
-========================== */
+
 function validate($data) {
     $err = [];
 
@@ -41,16 +37,13 @@ function validate($data) {
     return $err;
 }
 
-/* ==========================
-   XỬ LÝ CRUD
-========================== */
 $mode = $_GET["mode"] ?? "list";
 $id = $_GET["id"] ?? null;
 $errors = [];
 $form = [];
 $message = "";
 
-/* ----- Xử lý FORM POST ----- */
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $mode = $_POST["mode"];
@@ -88,20 +81,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-/* ----- Delete ----- */
+
 if ($mode === "delete" && $id) {
     $conn->query("DELETE FROM $table WHERE id=" . (int)$id);
     header("Location: index.php?msg=Xóa item thành công!");
     exit;
 }
 
-/* ----- Edit: lấy dữ liệu ----- */
 if ($mode === "edit" && $id && empty($form)) {
     $qr = $conn->query("SELECT * FROM $table WHERE id = " . (int)$id);
     $form = $qr->fetch_assoc();
 }
 
-/* ----- Lấy danh sách items ----- */
+
 $items = $conn->query("SELECT * FROM $table ORDER BY id DESC");
 
 $msg = $_GET["msg"] ?? "";
